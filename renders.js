@@ -27,12 +27,37 @@ import type {
   RenderStyles,
 } from './types'
 
+class ImageWidthFit extends React.Component {
+  state = {}
+  componentWillMount() {
+    Image.getSize(this.props.uri, (imgW, imgH) => {
+      this._imgPlaceHolder.measure(
+        (x, y, width, height, pageX, pageY) => {
+          const resizeWidth = width;
+          const resizeHeight = imgH / imgW * resizeWidth
+          this.setState({
+            width: resizeWidth,
+            height: resizeHeight
+          })
+        }
+      )
+    });
+  }
+  render() {
+    const {uri, style} = this.props;
+    const {width, height} = this.state
+    return (
+      (width && height) ? 
+        <Image source={{uri}} style={[style, {width, height}]}/> : 
+        <View ref={c => {this._imgPlaceHolder = c}} />
+    )
+  }
+} 
+
 function renderImage(node: ImageNode, output: OutputFunction, state: RenderState, styles: RenderStyles) {
   const {imageWrapper: wrapperStyle, image: imageStyle} = styles
   return (
-    <View key={state.key} style={node.width && node.height ? [wrapperStyle, paddedSize(node, wrapperStyle)] : wrapperStyle}>
-      <Image source={{uri: node.target}} style={imageStyle}/>
-    </View>
+      <ImageWidthFit key={state.key} uri={node.target} style={imageStyle}/>
   )
 }
 
