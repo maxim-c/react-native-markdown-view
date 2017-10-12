@@ -49,7 +49,7 @@ class ImageWidthFit extends React.Component {
     return (
       (width && height) ? 
         <Image source={{uri}} style={[style, {width, height}]}/> : 
-        <View ref={c => {this._imgPlaceHolder = c}} />
+        <View ref={c => {this._imgPlaceHolder = c}} style={{opacity: 1}}/>
     )
   }
 } 
